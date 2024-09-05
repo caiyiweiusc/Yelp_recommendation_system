@@ -15,11 +15,11 @@ from pyspark.sql.functions import col
 
 def parse_photos(line):
     data = json.loads(line)
-    return (data['business_id'], 1)  # 返回商家ID和照片计数1
+    return (data['business_id'], 1)  
 
 def parse_checkins(line):
     data = json.loads(line)
-    total_checkins = sum(data['time'].values())  # 累加所有时间段的check-in数
+    total_checkins = sum(data['time'].values())  
     return (data['business_id'], total_checkins)
 
 def parse_business_rating(line):
@@ -194,9 +194,8 @@ if __name__ == "__main__":
     checkin_data = sc.textFile(folder_path + "checkin.json").map(parse_checkins)
     photo_data = sc.textFile(folder_path + "photo.json").map(parse_photos)
     
-    photo_features = photo_data.reduceByKey(lambda a, b: a + b).collectAsMap()  # 按商家ID累加照片数，并转换为字典
-
-    checkin_features = checkin_data.collectAsMap()  # 将结果转换为字典以便查找
+    photo_features = photo_data.reduceByKey(lambda a, b: a + b).collectAsMap() 
+    checkin_features = checkin_data.collectAsMap()  
     
     grouped_reviews = review_data.groupByKey().mapValues(list)
 
